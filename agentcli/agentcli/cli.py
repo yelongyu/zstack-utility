@@ -1,11 +1,7 @@
-'''
-
+"""
 @author: frank
-'''
+"""
 
-from zstacklib.utils import http
-from zstacklib.utils import shell
-from zstacklib.utils import uuidhelper
 import sys
 import os
 import optparse
@@ -14,13 +10,16 @@ import readline
 import traceback
 import string
 
+from zstacklib.utils import http
+from zstacklib.utils import uuidhelper
+
 
 class Completer(object):
     COMMANDS = ['file', 'cmd']
     RE_SPACE = re.compile('.*\s+$', re.M)
 
     def _listdir(self, root):
-        "List directory 'root' appending the path separator to subdirs."
+        """List directory 'root' appending the path separator to subdirs."""
         res = []
         for name in os.listdir(root):
             path = os.path.join(root, name)
@@ -30,7 +29,7 @@ class Completer(object):
         return res
 
     def _complete_path(self, path=None):
-        "Perform completion of filesystem path."
+        """Perform completion of filesystem path."""
         if not path:
             return self._listdir('.')
         dirname, rest = os.path.split(path)
@@ -47,14 +46,14 @@ class Completer(object):
         return [path + ' ']
 
     def complete_file(self, args):
-        "Completions for the 'extra' command."
+        """Completions for the 'extra' command."""
         if not args:
             return self._complete_path('.')
         # treat the last arg as a path and complete it
         return self._complete_path(args[-1])
 
     def complete(self, text, state):
-        "Generic readline completion entry point."
+        """Generic readline completion entry point."""
         buffer = readline.get_line_buffer()
         line = readline.get_line_buffer().split()
         # show all commands
@@ -76,7 +75,7 @@ class Completer(object):
 
 
 class CliError(Exception):
-    '''Cli Error'''
+    """Cli Error"""
 
 
 class Cli(object):
@@ -128,7 +127,8 @@ class Cli(object):
             url = 'http://%s:%s/%s/' % (self.agent_ip, self.agent_port, path)
             callback_url = 'http://%s:%s/%s/' % (self.cip, 10086, 'result')
             rsp = http.json_post(url, json_str,
-                                 headers={http.TASK_UUID: uuidhelper.uuid(), http.CALLBACK_URI: callback_url})
+                                 headers={http.TASK_UUID: uuidhelper.uuid(),
+                                          http.CALLBACK_URI: callback_url})
             print rsp
 
         def from_text(tokens):
