@@ -174,12 +174,11 @@ def replyerror(func):
 
     return wrap
 
+
 class SftpBackupStorageAgent(object):
-    '''
-    classdocs
-    '''
-
-
+    """
+    api handlers
+    """
     CONNECT_PATH = "/sftpbackupstorage/connect"
     DOWNLOAD_IMAGE_PATH = "/sftpbackupstorage/download"
     DELETE_IMAGE_PATH = "/sftpbackupstorage/delete"
@@ -193,6 +192,7 @@ class SftpBackupStorageAgent(object):
     CHECK_IMAGE_METADATA_FILE_EXIST = "/sftpbackupstorage/checkimagemetadatafileexist"
     GET_IMAGES_METADATA = "/sftpbackupstorage/getimagesmetadata"
     GET_IMAGE_SIZE = "/sftpbackupstorage/getimagesize"
+    GET_CPUINFO = "/sftpbackupstorage/cpuinfo"
 
     IMAGE_TEMPLATE = 'template'
     IMAGE_ISO = 'iso'
@@ -221,7 +221,14 @@ class SftpBackupStorageAgent(object):
     @replyerror
     def echo(self, req):
         logger.debug('get echoed')
-        return ''
+        return 'echo'
+
+    @replyerror
+    def get_cpuinfo(self, req):
+        logger.debug('get cpuinfo')
+        with open('/proc/cpuinfo') as f:
+            cpu_info = f.read()
+            return cpu_info
 
     @replyerror
     def get_image_size(self, req):
@@ -476,9 +483,9 @@ class SftpBackupStorageAgent(object):
             return jsonobject.dumps(rsp)
 
     def __init__(self):
-        '''
-        Constructor
-        '''
+        """
+        api register
+        """
         self.http_server.register_sync_uri(self.CONNECT_PATH, self.connect)
         self.http_server.register_sync_uri(self.ECHO_PATH, self.echo)
         self.http_server.register_async_uri(self.DOWNLOAD_IMAGE_PATH, self.download_image)
@@ -492,8 +499,10 @@ class SftpBackupStorageAgent(object):
         self.http_server.register_async_uri(self.GET_IMAGES_METADATA, self.get_images_metadata)
         self.http_server.register_async_uri(self.PING_PATH, self.ping)
         self.http_server.register_async_uri(self.GET_IMAGE_SIZE, self.get_image_size)
+        self.http_server.register_sync_uri(self.GET_CPUINFO, self.get_cpuinfo)
         self.storage_path = None
         self.uuid = None
+
 
 class SftpBackupStorageDaemon(daemon.Daemon):
     def __init__(self, pidfile):
