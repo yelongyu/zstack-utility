@@ -1,6 +1,8 @@
-'''
+# -*- coding: utf-8 -*-
+"""
 @author: Frank
-'''
+"""
+
 import Queue
 import os.path
 import time
@@ -2685,6 +2687,8 @@ class VmPlugin(kvmagent.KvmAgent):
 
     def _record_operation(self, uuid, op):
         j = VmOperationJudger(op)
+        # name, value, timeout
+        # register a timer, delete it after 300 seconds
         self.timeout_object.put(uuid, j, 300)
 
     def _remove_operation(self, uuid):
@@ -2699,6 +2703,7 @@ class VmPlugin(kvmagent.KvmAgent):
     @lock.lock('libvirt-startvm')
     def _start_vm(self, cmd):
         try:
+            # 通过UUID查找VM是否存在
             vm = get_vm_by_uuid(cmd.vmInstanceUuid)
         except kvmagent.KvmError:
             vm = None
@@ -2711,6 +2716,7 @@ class VmPlugin(kvmagent.KvmAgent):
                 else:
                     vm.destroy()
 
+            # 根据收到的VM相关数据配置VM XML并返回一个VM对象
             vm = Vm.from_StartVmCmd(cmd)
             vm.start(cmd.timeout)
         except libvirt.libvirtError as e:
@@ -2778,7 +2784,9 @@ class VmPlugin(kvmagent.KvmAgent):
     def start_vm(self, req):
         cmd = jsonobject.loads(req[http.REQUEST_BODY])
         rsp = StartVmResponse()
+
         try:
+            # 记录此次操作，并设定超时时间为5分钟
             self._record_operation(cmd.vmInstanceUuid, self.VM_OP_START)
 
             self._start_vm(cmd)

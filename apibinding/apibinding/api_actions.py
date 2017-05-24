@@ -2,6 +2,7 @@ from apibinding import inventory
 from apibinding import api
 from zstacklib.utils import jsonobject
 
+
 class AddAliyunKeySecretAction(inventory.APIAddAliyunKeySecretMsg):
     def __init__(self):
         super(AddAliyunKeySecretAction, self).__init__()
@@ -1514,17 +1515,22 @@ class CreateVirtualRouterVmAction(inventory.APICreateVirtualRouterVmMsg):
         self.out = evt
         return self.out
 
+
 class CreateVmInstanceAction(inventory.APICreateVmInstanceMsg):
     def __init__(self):
         super(CreateVmInstanceAction, self).__init__()
         self.sessionUuid = None
         self.out = None
+
     def run(self):
         if not self.sessionUuid:
-            raise Exception('sessionUuid of action[CreateVmInstanceAction] cannot be None')
+            err_msg = 'sessionUuid of action[CreateVmInstanceAction]' \
+                      'cannot be None'
+            raise Exception(err_msg)
         evt = api.async_call(self, self.sessionUuid)
         self.out = evt
         return self.out
+
 
 class CreateVniRangeAction(inventory.APICreateVniRangeMsg):
     def __init__(self):

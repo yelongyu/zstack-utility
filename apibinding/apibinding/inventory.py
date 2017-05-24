@@ -6119,18 +6119,21 @@ class APICreateStopVmInstanceSchedulerMsg(object):
 
 
 APICREATEVMINSTANCEMSG_FULL_NAME = 'org.zstack.header.vm.APICreateVmInstanceMsg'
+
+
 class APICreateVmInstanceMsg(object):
-    FULL_NAME='org.zstack.header.vm.APICreateVmInstanceMsg'
+    FULL_NAME = 'org.zstack.header.vm.APICreateVmInstanceMsg'
+
     def __init__(self):
-        #mandatory field
+        # mandatory field
         self.name = NotNoneField()
-        #mandatory field
+        # mandatory field
         self.instanceOfferingUuid = NotNoneField()
-        #mandatory field
+        # mandatory field
         self.imageUuid = NotNoneField()
-        #mandatory field
+        # mandatory field
         self.l3NetworkUuids = NotNoneList()
-        #valid values: [UserVm, ApplianceVm]
+        # valid values: [UserVm, ApplianceVm]
         self.type = None
         self.rootDiskOfferingUuid = None
         self.dataDiskOfferingUuids = OptionalList()
@@ -6140,7 +6143,7 @@ class APICreateVmInstanceMsg(object):
         self.primaryStorageUuidForRootVolume = None
         self.description = None
         self.defaultL3NetworkUuid = None
-        #valid values: [InstantStart, JustCreate]
+        # valid values: [InstantStart, JustCreate]
         self.strategy = None
         self.resourceUuid = None
         self.session = None
